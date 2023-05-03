@@ -53,18 +53,38 @@ public class UserController {
         return new ResponseEntity<>(userListPS, HttpStatus.OK);
     }
 
+    // 인증 체크
+    @GetMapping("/users/hello")
+    public ResponseEntity<?> userHello() {
+        List<User> userListPS = userRepository.findAll();
+        return new ResponseEntity<>(userListPS, HttpStatus.OK);
+    }
+
+
     // 인증과 권한 - 세션 찾기
     @GetMapping("/users/{id}/v1")
     public ResponseEntity<?> userDetailV1(@PathVariable Integer id) {
         User loginUser = (User) session.getAttribute("loginUser");
         if (!loginUser.getId().equals(id)) {
-            throw new MyException("고객 정보를 볼 수 있는 권한이 없습니다");
+            throw new MyException("고객 정보를 볼 수 있는 권한이 없습니다", HttpStatus.FORBIDDEN);
         }
         User userPS = userRepository.findById(id).orElseThrow(
                 () -> new MyException("해당 유저를 찾을 수 없습니다")
         );
         return new ResponseEntity<>(userPS, HttpStatus.OK);
     }
+
+    // 인증과 권한 - 리조러
+    // @GetMapping("/users/{id}/v2")
+    // public ResponseEntity<?> userDetailV2(@PathVariable Integer id, @LoginUser User loginUser) {
+    //     if (!loginUser.getId().equals(id)) {
+    //         throw new MyException("고객 정보를 볼 수 있는 권한이 없습니다");
+    //     }
+    //     User userPS = userRepository.findById(id).orElseThrow(
+    //             () -> new MyException("해당 유저를 찾을 수 없습니다")
+    //     );
+    //     return new ResponseEntity<>(userPS, HttpStatus.OK);
+    // }
 
     @PostMapping("/products/{id}/cart")
     public ResponseEntity<?> addCart(@PathVariable Integer id, HttpServletRequest request, HttpServletResponse response) {
