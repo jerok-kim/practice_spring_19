@@ -60,7 +60,7 @@ public class UserController {
         return new ResponseEntity<>(userListPS, HttpStatus.OK);
     }
 
-
+    // 주소로 전달되는 데이터는 신뢰할 수 없는 데이터 => 무조건 검증
     // 인증과 권한 - 세션 찾기
     @GetMapping("/users/{id}/v1")
     public ResponseEntity<?> userDetailV1(@PathVariable Integer id) {
@@ -74,7 +74,7 @@ public class UserController {
         return new ResponseEntity<>(userPS, HttpStatus.OK);
     }
 
-    // 인증과 권한 - 리조러
+    // 인증과 권한 - 리졸버
     // @GetMapping("/users/{id}/v2")
     // public ResponseEntity<?> userDetailV2(@PathVariable Integer id, @LoginUser User loginUser) {
     //     if (!loginUser.getId().equals(id)) {
@@ -110,6 +110,15 @@ public class UserController {
         cookie.setMaxAge(1000 * 60 * 60);  // 1시간
         cookie.setHttpOnly(false);  // document.cookie
         response.addCookie(cookie);
+        return new ResponseEntity<>("쿠키등록됨", HttpStatus.OK);
+    }
+
+    @GetMapping("/cookie/v1")
+    public ResponseEntity<?> addCartV2(HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = new Cookie("myId", "rustacean");
+        cookie.setHttpOnly(false);
+        response.addCookie(cookie);
+        // response.setHeader("Set-Cookie", "name=jerok");
         return new ResponseEntity<>("쿠키등록됨", HttpStatus.OK);
     }
 }
